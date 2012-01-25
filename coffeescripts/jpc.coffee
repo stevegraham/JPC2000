@@ -1,22 +1,22 @@
+audioContext = new webkitAudioContext
 class AudioPlayer
   constructor: (file) ->
     reader = new FileReader
     self   = this
 
     reader.onload = (event) =>
-      @audioContext    = new webkitAudioContext
       onsuccess        = (buffer) -> self.buffer = buffer
       onerror          = -> alert 'Unsupported file format'
 
-      @audioContext.decodeAudioData event.target.result, onsuccess, onerror
+      audioContext.decodeAudioData event.target.result, onsuccess, onerror
 
     reader.readAsArrayBuffer(file)
 
   play: ->
     if @buffer
-      @source        = @audioContext.createBufferSource()
+      @source        = audioContext.createBufferSource()
       @source.buffer = @buffer
-      @source.connect @audioContext.destination
+      @source.connect audioContext.destination
       @source.noteOn 0
 
   stop: ->

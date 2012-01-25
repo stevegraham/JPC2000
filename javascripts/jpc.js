@@ -1,5 +1,7 @@
 (function() {
-  var AudioPlayer;
+  var AudioPlayer, audioContext;
+
+  audioContext = new webkitAudioContext;
 
   AudioPlayer = (function() {
 
@@ -10,23 +12,22 @@
       self = this;
       reader.onload = function(event) {
         var onerror, onsuccess;
-        _this.audioContext = new webkitAudioContext;
         onsuccess = function(buffer) {
           return self.buffer = buffer;
         };
         onerror = function() {
           return alert('Unsupported file format');
         };
-        return _this.audioContext.decodeAudioData(event.target.result, onsuccess, onerror);
+        return audioContext.decodeAudioData(event.target.result, onsuccess, onerror);
       };
       reader.readAsArrayBuffer(file);
     }
 
     AudioPlayer.prototype.play = function() {
       if (this.buffer) {
-        this.source = this.audioContext.createBufferSource();
+        this.source = audioContext.createBufferSource();
         this.source.buffer = this.buffer;
-        this.source.connect(this.audioContext.destination);
+        this.source.connect(audioContext.destination);
         return this.source.noteOn(0);
       }
     };
