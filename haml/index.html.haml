@@ -1,0 +1,34 @@
+!!!5
+%head
+  %title JPC2000 &ndash; JavaScript Production Center
+
+  %script{ type: 'text/javascript', src: 'http://code.jquery.com/jquery-1.7.1.min.js' }
+  %script{ type: 'text/javascript', src: '../javascripts/jpc.js' }
+
+%body
+  :css
+    #pads {
+      width: 750px
+    }
+
+    button {
+      height: 150px;
+      width:  150px;
+      margin: 10px
+    }
+
+  #jpc
+    #pads
+      %button#q.pad
+      %button#e.pad
+      %button#r.pad
+      %button#t.pad
+      %button#a.pad
+      %button#s.pad
+      %button#d.pad
+      %button#f.pad
+      %button#z.pad
+      %button#x.pad
+      %button#c.pad
+      %button#v.pad
+
