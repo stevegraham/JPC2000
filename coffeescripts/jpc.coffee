@@ -3,19 +3,25 @@ class AudioPlayer
     reader = new FileReader
     self   = this
 
-    reader.onload = (event) ->
-      audioContext    = new webkitAudioContext
-      audioContext.decodeAudioData event.target.result, (buffer) ->
-        source        = audioContext.createBufferSource()
-        source.buffer = buffer
+    reader.onload = (event) =>
+      @audioContext    = new webkitAudioContext
+      onsuccess        = (buffer) -> self.buffer = buffer
+      onerror          = -> alert 'Unsupported file format'
 
-        source.connect audioContext.destination
-        self.source   = source
+      @audioContext.decodeAudioData event.target.result, onsuccess, onerror
 
     reader.readAsArrayBuffer(file)
 
   play: ->
-    this.source.noteOn 0
+    if @buffer
+      @source        = @audioContext.createBufferSource()
+      @source.buffer = @buffer
+      @source.connect @audioContext.destination
+      @source.noteOn 0
+
+  stop: ->
+    if @buffer && @source
+      @source.noteOff 0
 
 $(document).ready ->
   $('button').bind 'dragover', (event) ->
@@ -28,16 +34,15 @@ $(document).ready ->
 
   $('button').mousedown (event) ->
     event.preventDefault()
+
     if event.target.audioPlayer
-      console.log event.target.audioPlayer
       event.target.audioPlayer.play()
 
   $('button').mouseup (event) ->
     event.preventDefault()
-    if event.target.source
-      true
-      event.target.audioContext.currentTime = 0
 
+    if event.target.audioPlayer
+      event.target.audioPlayer.stop()
 
 
   $('button').bind 'drop', (event) ->

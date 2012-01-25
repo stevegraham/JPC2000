@@ -4,25 +4,35 @@
   AudioPlayer = (function() {
 
     function AudioPlayer(file) {
-      var reader, self;
+      var reader, self,
+        _this = this;
       reader = new FileReader;
       self = this;
       reader.onload = function(event) {
-        var audioContext;
-        audioContext = new webkitAudioContext;
-        return audioContext.decodeAudioData(event.target.result, function(buffer) {
-          var source;
-          source = audioContext.createBufferSource();
-          source.buffer = buffer;
-          source.connect(audioContext.destination);
-          return self.source = source;
-        });
+        var onerror, onsuccess;
+        _this.audioContext = new webkitAudioContext;
+        onsuccess = function(buffer) {
+          return self.buffer = buffer;
+        };
+        onerror = function() {
+          return alert('Unsupported file format');
+        };
+        return _this.audioContext.decodeAudioData(event.target.result, onsuccess, onerror);
       };
       reader.readAsArrayBuffer(file);
     }
 
     AudioPlayer.prototype.play = function() {
-      return this.source.noteOn(0);
+      if (this.buffer) {
+        this.source = this.audioContext.createBufferSource();
+        this.source.buffer = this.buffer;
+        this.source.connect(this.audioContext.destination);
+        return this.source.noteOn(0);
+      }
+    };
+
+    AudioPlayer.prototype.stop = function() {
+      if (this.buffer && this.source) return this.source.noteOff(0);
     };
 
     return AudioPlayer;
@@ -40,17 +50,11 @@
     });
     $('button').mousedown(function(event) {
       event.preventDefault();
-      if (event.target.audioPlayer) {
-        console.log(event.target.audioPlayer);
-        return event.target.audioPlayer.play();
-      }
+      if (event.target.audioPlayer) return event.target.audioPlayer.play();
     });
     $('button').mouseup(function(event) {
       event.preventDefault();
-      if (event.target.source) {
-        true;
-        return event.target.audioContext.currentTime = 0;
-      }
+      if (event.target.audioPlayer) return event.target.audioPlayer.stop();
     });
     return $('button').bind('drop', function(event) {
       var file, target;
