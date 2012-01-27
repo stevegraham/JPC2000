@@ -36,13 +36,14 @@ $(document).ready ->
     event.preventDefault()
 
     if event.target.audioPlayer
+      event.target.audioPlayer.stop()
       event.target.audioPlayer.play()
 
   $('button').mouseup (event) ->
-    event.preventDefault()
+    #event.preventDefault()
 
-    if event.target.audioPlayer
-      event.target.audioPlayer.stop()
+    #if event.target.audioPlayer
+      #event.target.audioPlayer.stop()
 
 
   $('button').bind 'drop', (event) ->

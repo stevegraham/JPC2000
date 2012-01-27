@@ -51,12 +51,12 @@
     });
     $('button').mousedown(function(event) {
       event.preventDefault();
-      if (event.target.audioPlayer) return event.target.audioPlayer.play();
+      if (event.target.audioPlayer) {
+        event.target.audioPlayer.stop();
+        return event.target.audioPlayer.play();
+      }
     });
-    $('button').mouseup(function(event) {
-      event.preventDefault();
-      if (event.target.audioPlayer) return event.target.audioPlayer.stop();
-    });
+    $('button').mouseup(function(event) {});
     return $('button').bind('drop', function(event) {
       var file, target;
       event.preventDefault();
