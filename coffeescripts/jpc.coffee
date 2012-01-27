@@ -1,58 +1,62 @@
-audioContext = new webkitAudioContext
-class AudioPlayer
-  constructor: (file) ->
-    reader = new FileReader
-    self   = this
-
-    reader.onload = (event) =>
-      onsuccess        = (buffer) -> self.buffer = buffer
-      onerror          = -> alert 'Unsupported file format'
-
-      audioContext.decodeAudioData event.target.result, onsuccess, onerror
-
-    reader.readAsArrayBuffer(file)
-
-  play: ->
-    if @buffer
-      @source        = audioContext.createBufferSource()
-      @source.buffer = @buffer
-      @source.connect audioContext.destination
-      @source.noteOn 0
-
-  stop: ->
-    if @buffer && @source
-      @source.noteOff 0
-
 $(document).ready ->
-  $('button').bind 'dragover', (event) ->
-    event.preventDefault()
-    event.stopImmediatePropagation()
+  $(document).bind 'keypress', (event) ->
+    code = String event.keyCode
+    $('#' + code).trigger 'mousedown'
 
-  $('button').bind 'dragenter', (event) ->
-    event.preventDefault()
-    event.stopImmediatePropagation()
+  audioContext = new webkitAudioContext
 
-  $('button').mousedown (event) ->
-    event.preventDefault()
+  class AudioPlayer
+    constructor: ->
 
-    if event.target.audioPlayer
-      event.target.audioPlayer.stop()
-      event.target.audioPlayer.play()
+    play: ->
+      if @buffer
+        @source        = audioContext.createBufferSource()
+        @source.buffer = @buffer
+        @source.connect audioContext.destination
+        @source.noteOn 0
 
-  $('button').mouseup (event) ->
-    #event.preventDefault()
+    stop: ->
+      if @buffer && @source
+        @source.noteOff 0
 
-    #if event.target.audioPlayer
-      #event.target.audioPlayer.stop()
+    load_file: (file) ->
+      reader = new FileReader
+      self   = this
+
+      reader.onload = (event) =>
+        onsuccess = (buffer) -> self.buffer = buffer
+        onerror   = -> alert 'Unsupported file format'
+
+        audioContext.decodeAudioData event.target.result, onsuccess, onerror
+
+      reader.readAsArrayBuffer(file)
 
 
-  $('button').bind 'drop', (event) ->
-    event.preventDefault()
-    target = event.target
-    file   = event.originalEvent.dataTransfer.files[0]
+  class PadView extends Backbone.View
+    initialize: ->
+      @audio_player = new AudioPlayer
 
-    target.audioPlayer = new AudioPlayer file
+    triggerSample: ->
+      @audio_player.stop()
+      @audio_player.play()
 
+    loadSample: (event) ->
+      target = event.target
+      file   = event.originalEvent.dataTransfer.files[0]
 
+      @audio_player.load_file(file)
+      event.preventDefault()
 
+    stopPropagation: (event) ->
+      event.preventDefault()
+      event.stopImmediatePropagation()
+
+    events:
+      'dragover'  : 'stopPropagation'
+      'dragover'  : 'stopPropagation'
+      'mousedown' : 'triggerSample'
+      'drop'      : 'loadSample'
+
+  $('#pads button').each (index,element) ->
+    new PadView el: element
 
