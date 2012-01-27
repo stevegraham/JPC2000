@@ -3,7 +3,7 @@
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; };
 
   $(document).ready(function() {
-    var AudioPlayer, PadView, audioContext;
+    var AudioPlayer, ChokeGroupView, PadView, audioContext, chokeGroup;
     $(document).bind('keypress', function(event) {
       var code;
       code = String(event.keyCode);
@@ -61,6 +61,8 @@
       };
 
       PadView.prototype.triggerSample = function() {
+        chokeGroup.select(this);
+        if (this.chokeGroup) $('#pads button').trigger('choke', this.chokeGroup);
         this.audio_player.stop();
         return this.audio_player.play();
       };
@@ -78,19 +80,67 @@
         return event.stopImmediatePropagation();
       };
 
+      PadView.prototype.onchoke = function(event, groupId) {
+        if (this.chokeGroup) {
+          if (groupId === this.chokeGroup) return this.audio_player.stop();
+        }
+      };
+
       PadView.prototype.events = {
         'dragover': 'stopPropagation',
         'dragover': 'stopPropagation',
         'mousedown': 'triggerSample',
-        'drop': 'loadSample'
+        'drop': 'loadSample',
+        'choke': 'onchoke'
       };
 
       return PadView;
 
     })(Backbone.View);
+    ChokeGroupView = (function(_super) {
+
+      __extends(ChokeGroupView, _super);
+
+      function ChokeGroupView() {
+        ChokeGroupView.__super__.constructor.apply(this, arguments);
+      }
+
+      ChokeGroupView.prototype.el = '#choke_group';
+
+      ChokeGroupView.prototype.initialize = function() {
+        return this.el = $(this.el);
+      };
+
+      ChokeGroupView.prototype.enable = function() {
+        return this.el.attr('disabled', null);
+      };
+
+      ChokeGroupView.prototype.disable = function() {
+        return this.el.attr('disabled', null);
+      };
+
+      ChokeGroupView.prototype.select = function(selector) {
+        this.selector = selector;
+        this.enable();
+        return this.el.val(this.selector.chokeGroup);
+      };
+
+      ChokeGroupView.prototype.onchange = function(event) {
+        var value;
+        if (value = event.target.value) return this.selector.chokeGroup = value;
+      };
+
+      ChokeGroupView.prototype.events = {
+        'change': 'onchange'
+      };
+
+      return ChokeGroupView;
+
+    })(Backbone.View);
+    chokeGroup = new ChokeGroupView;
     return $('#pads button').each(function(index, element) {
       return new PadView({
-        el: element
+        el: $(element)
       });
     });
   });
