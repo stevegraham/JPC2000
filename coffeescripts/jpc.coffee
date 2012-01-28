@@ -6,7 +6,7 @@ $(document).ready ->
   audioContext = new webkitAudioContext
 
   class AudioPlayer
-    constructor: ->
+    constructor: (@view)->
 
     play: ->
       if @buffer
@@ -14,10 +14,18 @@ $(document).ready ->
         @source.buffer = @buffer
         @source.connect audioContext.destination
         @source.noteOn 0
+        @triggerView()
 
     stop: ->
       if @buffer && @source
         @source.noteOff 0
+
+
+    triggerView: ->
+      @view.lightOn()
+      window.clearTimeout @timer
+      timeOut =  (@buffer.length / @buffer.sampleRate) * 1000
+      @timer  = window.setTimeout @view.lightOff, timeOut
 
     load_file: (file) ->
       reader = new FileReader
@@ -34,7 +42,12 @@ $(document).ready ->
 
   class PadView extends Backbone.View
     initialize: ->
-      @audio_player = new AudioPlayer
+      @el           = $(@el)
+      @audio_player = new AudioPlayer this
+
+    lightOn:  -> @el.addClass 'active'
+
+    lightOff: => @el.removeClass 'active'
 
     triggerSample: ->
       chokeGroup.select(this)
