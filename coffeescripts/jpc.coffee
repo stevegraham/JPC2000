@@ -3,6 +3,37 @@ $(document).ready ->
     code = String event.keyCode
     $('#' + code).trigger 'mousedown'
 
+  class Sequencer
+    constructor: ->
+      @track    = []
+      @timers   = []
+      @position = 0
+
+      $('#pads button').bind 'mousedown', (event) =>
+        if @recording
+          timeDelta = new Date().getTime() - @timeStamp
+          @track.push [timeDelta, event.target]
+
+
+    record: ->
+      @timeStamp = new Date().getTime()
+      @play()
+      @recording = true
+
+    play: ->
+      @recording = false
+      @timers = @track.map (pair, index) ->
+        func = -> $(pair[1]).trigger 'mousedown'
+        window.setTimeout func, pair[0]
+
+    stop: ->
+      @recording = false
+      #$('#pads button').unbind 'mousedown'
+      @timers.map (timer) -> window.clearTimeout timer
+      @timers = []
+
+    deleteTrack: (track_id) ->
+
   audioContext = new webkitAudioContext
 
   class AudioPlayer
@@ -67,7 +98,6 @@ $(document).ready ->
 
     stopPropagation: (event) ->
       event.preventDefault()
-      event.stopImmediatePropagation()
 
     onchoke: (event, groupId)->
       if @chokeGroup
@@ -105,6 +135,25 @@ $(document).ready ->
 
 
   chokeGroup = new ChokeGroupView
+
+  class TransportView extends Backbone.View
+    el: '#transport'
+
+    initialize: ->
+      @sequencer = new Sequencer
+
+    play: -> @sequencer.play()
+
+    stop: -> @sequencer.stop()
+
+    record: -> @sequencer.record()
+
+    events:
+      'click #record' : 'record'
+      'click #play'   : 'play'
+      'click #stop'   : 'stop'
+
+    new TransportView
 
   $('#pads button').each (index,element) -> new PadView el: $(element)
 

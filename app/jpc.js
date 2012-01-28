@@ -4,12 +4,58 @@
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; };
 
   $(document).ready(function() {
-    var AudioPlayer, ChokeGroupView, PadView, audioContext, chokeGroup;
+    var AudioPlayer, ChokeGroupView, PadView, Sequencer, TransportView, audioContext, chokeGroup;
     $(document).bind('keypress', function(event) {
       var code;
       code = String(event.keyCode);
       return $('#' + code).trigger('mousedown');
     });
+    Sequencer = (function() {
+
+      function Sequencer() {
+        var _this = this;
+        this.track = [];
+        this.timers = [];
+        this.position = 0;
+        $('#pads button').bind('mousedown', function(event) {
+          var timeDelta;
+          if (_this.recording) {
+            timeDelta = new Date().getTime() - _this.timeStamp;
+            return _this.track.push([timeDelta, event.target]);
+          }
+        });
+      }
+
+      Sequencer.prototype.record = function() {
+        this.timeStamp = new Date().getTime();
+        this.play();
+        return this.recording = true;
+      };
+
+      Sequencer.prototype.play = function() {
+        this.recording = false;
+        return this.timers = this.track.map(function(pair, index) {
+          var func;
+          func = function() {
+            return $(pair[1]).trigger('mousedown');
+          };
+          return window.setTimeout(func, pair[0]);
+        });
+      };
+
+      Sequencer.prototype.stop = function() {
+        this.recording = false;
+        this.timers.map(function(timer) {
+          return window.clearTimeout(timer);
+        });
+        return this.timers = [];
+      };
+
+      Sequencer.prototype.deleteTrack = function(track_id) {};
+
+      return Sequencer;
+
+    })();
     audioContext = new webkitAudioContext;
     AudioPlayer = (function() {
 
@@ -103,8 +149,7 @@
       };
 
       PadView.prototype.stopPropagation = function(event) {
-        event.preventDefault();
-        return event.stopImmediatePropagation();
+        return event.preventDefault();
       };
 
       PadView.prototype.onchoke = function(event, groupId) {
@@ -172,6 +217,43 @@
 
     })(Backbone.View);
     chokeGroup = new ChokeGroupView;
+    TransportView = (function(_super) {
+
+      __extends(TransportView, _super);
+
+      function TransportView() {
+        TransportView.__super__.constructor.apply(this, arguments);
+      }
+
+      TransportView.prototype.el = '#transport';
+
+      TransportView.prototype.initialize = function() {
+        return this.sequencer = new Sequencer;
+      };
+
+      TransportView.prototype.play = function() {
+        return this.sequencer.play();
+      };
+
+      TransportView.prototype.stop = function() {
+        return this.sequencer.stop();
+      };
+
+      TransportView.prototype.record = function() {
+        return this.sequencer.record();
+      };
+
+      TransportView.prototype.events = {
+        'click #record': 'record',
+        'click #play': 'play',
+        'click #stop': 'stop'
+      };
+
+      new TransportView;
+
+      return TransportView;
+
+    })(Backbone.View);
     return $('#pads button').each(function(index, element) {
       return new PadView({
         el: $(element)

@@ -9,23 +9,62 @@
 <body>
   <style type='text/css'>
     /*<![CDATA[*/
+      * {
+        border-radius: 5px
+      }
+      
       body {
-        background: #EAEEE4;
+        background: -webkit-linear-gradient(bottom, rgb(191,194,188) 0%, rgb(206,210,201) 50%);
+        font-family: "Helvetica Neue", Arial, Helvetica, Geneva, sans-serif;
+        text-transform: uppercase;
+      }
+      
+      #logo {
+        margin: 20px 5px;
+      }
+      
+      #jpc #logo h1 {
+        background: url('/logo.png') no-repeat;
+        width: 370px;
+        height: 60px;
+        text-indent: -9999px;
+      }
+      
+      #logo h1, #logo h2 {
+        margin: 5px 0;
+      }
+      
+      #logo h2 {
+        font-weight: 400;
+        font-size: 90%;
+        letter-spacing: 4px;
+        word-spacing: 7px;
+        color: #555;
+      }
+      
+      #logo {
+        width: 370px;
+      }
+      
+      #logo #rule {
+        border-left 185px solid #f00
       }
       
       #pads {
         width: 695px;
-        background: #4c4e48;
+        background: -webkit-linear-gradient(bottom, rgb(80,96,97) 0%, rgb(99,119,122) 100%);
         padding: 15px;
+        vertical-align: baseline;
+        border-radius: 10px
       }
       
-      button {
+      #pads button {
         background: -webkit-linear-gradient(bottom, rgb(166,166,166) 0%, rgb(189,189,189) 80%, rgb(209,209,209) 96%);
         box-shadow: 0 0 3px #222;
         border: none;
         height: 150px;
         width:  150px;
-        margin: 10px
+        margin: 10px;
       }
       
       @-webkit-keyframes pad_hit {
@@ -38,13 +77,20 @@
       }
       
       button.active {
-        background: -webkit-linear-gradient(bottom, rgb(194,97,97) 0%, rgb(227,150,160) 50%, rgb(240,173,173) 75%);
-        position: relative;
-        top: 1px;
+        background: #ca8f8f;
       }
     /*]]>*/
   </style>
   <div id='jpc'>
+    <div id='logo'>
+      <h1>JPC2000</h1>
+      <h2>JavaScript Production Center</h2>
+    </div>
+    <div id='transport'>
+      <button id='record'>record</button>
+      <button id='play'>play</button>
+      <button id='stop'>stop</button>
+    </div>
     <div id='pads'>
       <button class='pad' id='113'></button>
       <button class='pad' id='119'></button>
