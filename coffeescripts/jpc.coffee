@@ -19,9 +19,12 @@ $(document).ready ->
     stop: ->
       if @buffer && @source
         @source.noteOff 0
+        window.clearTimeout @timer
+        @view.lightOff
 
 
     triggerView: ->
+      @view.lightOff()
       @view.lightOn()
       window.clearTimeout @timer
       timeOut =  (@buffer.length / @buffer.sampleRate) * 1000
@@ -45,7 +48,7 @@ $(document).ready ->
       @el           = $(@el)
       @audio_player = new AudioPlayer this
 
-    lightOn:  -> @el.addClass 'active'
+    lightOn:  -> @el.addClass('active pressed')
 
     lightOff: => @el.removeClass 'active'
 
@@ -68,14 +71,17 @@ $(document).ready ->
 
     onchoke: (event, groupId)->
       if @chokeGroup
-        @audio_player.stop() if groupId == @chokeGroup
+         @lightOff() && @audio_player.stop() if groupId == @chokeGroup
+
+    resetAnimation: -> @el.removeClass('pressed')
 
     events:
-      'dragover'  : 'stopPropagation'
-      'dragover'  : 'stopPropagation'
-      'mousedown' : 'triggerSample'
-      'drop'      : 'loadSample'
-      'choke'     : 'onchoke'
+      'dragover'           : 'stopPropagation'
+      'dragover'           : 'stopPropagation'
+      'mousedown'          : 'triggerSample'
+      'drop'               : 'loadSample'
+      'choke'              : 'onchoke'
+      'webkitAnimationEnd' : 'resetAnimation'
 
 
   class ChokeGroupView extends Backbone.View

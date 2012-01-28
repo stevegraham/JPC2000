@@ -26,10 +26,19 @@
         margin: 10px
       }
       
+      @-webkit-keyframes pad_hit {
+        0%   { background: #f56b6b; }
+        100% { background: #ca8f8f; }
+      }
+      
+      button.pressed {
+        -webkit-animation: pad_hit 0.1s 1;
+      }
+      
       button.active {
         background: #ca8f8f;
         position: relative;
-        top: 1px
+        top: 1px;
       }
     /*]]>*/
   </style>

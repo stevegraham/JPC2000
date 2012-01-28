@@ -28,11 +28,16 @@
       };
 
       AudioPlayer.prototype.stop = function() {
-        if (this.buffer && this.source) return this.source.noteOff(0);
+        if (this.buffer && this.source) {
+          this.source.noteOff(0);
+          window.clearTimeout(this.timer);
+          return this.view.lightOff;
+        }
       };
 
       AudioPlayer.prototype.triggerView = function() {
         var timeOut;
+        this.view.lightOff();
         this.view.lightOn();
         window.clearTimeout(this.timer);
         timeOut = (this.buffer.length / this.buffer.sampleRate) * 1000;
@@ -75,7 +80,7 @@
       };
 
       PadView.prototype.lightOn = function() {
-        return this.el.addClass('active');
+        return this.el.addClass('active pressed');
       };
 
       PadView.prototype.lightOff = function() {
@@ -104,8 +109,14 @@
 
       PadView.prototype.onchoke = function(event, groupId) {
         if (this.chokeGroup) {
-          if (groupId === this.chokeGroup) return this.audio_player.stop();
+          if (groupId === this.chokeGroup) {
+            return this.lightOff() && this.audio_player.stop();
+          }
         }
+      };
+
+      PadView.prototype.resetAnimation = function() {
+        return this.el.removeClass('pressed');
       };
 
       PadView.prototype.events = {
@@ -113,7 +124,8 @@
         'dragover': 'stopPropagation',
         'mousedown': 'triggerSample',
         'drop': 'loadSample',
-        'choke': 'onchoke'
+        'choke': 'onchoke',
+        'webkitAnimationEnd': 'resetAnimation'
       };
 
       return PadView;
