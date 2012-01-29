@@ -3,6 +3,37 @@ $(document).ready ->
     code = String event.keyCode
     $('#' + code).trigger 'mousedown'
 
+  class Display
+    canvas = document.getElementById 'display'
+    ctx    = canvas.getContext "2d"
+
+    ctx.strokeStyle = '#1c211a'
+
+    @drawWaveform: (buffer) ->
+      @clear()
+      channelData   = buffer.getChannelData(0)
+      frameInterval = Math.floor buffer.length / canvas.width
+      posX          = 0
+      i             = 0
+
+      ctx.lineTo canvas.width, 0
+      ctx.beginPath()
+      ctx.moveTo posX, canvas.height / 2
+
+      while i < buffer.length
+        float = channelData[i]
+        i    += frameInterval
+
+        ctx.lineTo ++posX,  (float *40) + (canvas.height /2)
+        ctx.lineTo posX,   -(float *40) + (canvas.height /2)
+
+      ctx.stroke()
+
+
+
+
+    @clear: -> ctx.clearRect 0, 0, canvas.width, canvas.height
+
   class Sequencer
     constructor: ->
       @track    = []
@@ -66,7 +97,10 @@ $(document).ready ->
       self   = this
 
       reader.onload = (event) =>
-        onsuccess = (buffer) -> self.buffer = buffer
+        onsuccess = (buffer) ->
+          self.buffer = buffer
+          Display.drawWaveform buffer
+
         onerror   = -> alert 'Unsupported file format'
 
         audioContext.decodeAudioData event.target.result, onsuccess, onerror

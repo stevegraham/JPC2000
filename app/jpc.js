@@ -4,12 +4,49 @@
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; };
 
   $(document).ready(function() {
-    var AudioPlayer, ChokeGroupView, PadView, Sequencer, TransportView, audioContext, chokeGroup;
+    var AudioPlayer, ChokeGroupView, Display, PadView, Sequencer, TransportView, audioContext, chokeGroup;
     $(document).bind('keypress', function(event) {
       var code;
       code = String(event.keyCode);
       return $('#' + code).trigger('mousedown');
     });
+    Display = (function() {
+      var canvas, ctx;
+
+      function Display() {}
+
+      canvas = document.getElementById('display');
+
+      ctx = canvas.getContext("2d");
+
+      ctx.strokeStyle = '#1c211a';
+
+      Display.drawWaveform = function(buffer) {
+        var channelData, float, frameInterval, i, posX;
+        this.clear();
+        channelData = buffer.getChannelData(0);
+        frameInterval = Math.floor(buffer.length / canvas.width);
+        posX = 0;
+        i = 0;
+        ctx.lineTo(canvas.width, 0);
+        ctx.beginPath();
+        ctx.moveTo(posX, canvas.height / 2);
+        while (i < buffer.length) {
+          float = channelData[i];
+          i += frameInterval;
+          ctx.lineTo(++posX, (float * 40) + (canvas.height / 2));
+          ctx.lineTo(posX, -(float * 40) + (canvas.height / 2));
+        }
+        return ctx.stroke();
+      };
+
+      Display.clear = function() {
+        return ctx.clearRect(0, 0, canvas.width, canvas.height);
+      };
+
+      return Display;
+
+    })();
     Sequencer = (function() {
 
       function Sequencer() {
@@ -98,7 +135,8 @@
         reader.onload = function(event) {
           var onerror, onsuccess;
           onsuccess = function(buffer) {
-            return self.buffer = buffer;
+            self.buffer = buffer;
+            return Display.drawWaveform(buffer);
           };
           onerror = function() {
             return alert('Unsupported file format');
