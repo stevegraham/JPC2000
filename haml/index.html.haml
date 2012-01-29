@@ -43,13 +43,13 @@
     }
 
     #logo {
-      margin: 25px 25px;
+      margin: 10px 25px;
     }
 
     #jpc #logo h1 {
       background: url('/logo.png') no-repeat;
       width: 370px;
-      height: 60px;
+      height: 146px;
       text-indent: -9999px;
     }
 
@@ -70,10 +70,6 @@
       width: 370px;
     }
 
-    #logo #rule {
-      border-left 185px solid #f00
-    }
-
     #mhd {
       width: 400px;
       box-shadow: 0px 1px 1px #222;
@@ -81,6 +77,21 @@
       top: 300px;
       left: 40px;
       -webkit-transform:rotate(350deg)
+    }
+
+    #sticker {
+      display: inline;
+      padding: 5px 20px;
+      border-radius: 10px;
+      background: #fff;
+      text-align: center;
+      background: #71ad1b;
+      color: #d3d13c;
+      position: absolute;
+      top: 380px;
+      left: 140px;
+      box-shadow: 0px 1px 1px #222;
+      -webkit-transform:rotate(3deg)
     }
 
     #bezel {
@@ -92,8 +103,6 @@
     }
 
     #display {
-      width: 540px;
-      height: 80px;
       background: #bdc6b3;
       border: 2px solid #aaa;
       padding: 15px;
@@ -148,8 +157,9 @@
       font-size: 100%;
       background: -webkit-linear-gradient(bottom, rgb(138,138,138) 0%, rgb(184,184,184) 100%);
       color: #444;
-      box-shadow: 0 1px 2px #222;
-      border-width: 1px
+      box-shadow: 0 1px 2px #222, 0 -1px 1px #666;
+      border-width: 1px;
+      text-shadow:  0 1px 2px #fff;
     }
 
     #transport button:active {
@@ -161,9 +171,12 @@
 
   #jpc
     #bezel
-      #display
+      %canvas#display{ width: '540px', height: '80px' }
 
     %img#mhd{ src: 'mhd_logo.png'}
+
+    #sticker
+      A Stevie Graham Joint
 
     #pads
       %button#113.pad
