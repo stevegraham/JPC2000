@@ -13,14 +13,36 @@
         border-radius: 5px
       }
       
+      html {
+        height: 100%
+      }
+      
       body {
-        background: -webkit-linear-gradient(bottom, rgb(191,194,188) 0%, rgb(206,210,201) 50%);
+        background: #866;
+        height: 100%;
         font-family: "Helvetica Neue", Arial, Helvetica, Geneva, sans-serif;
         text-transform: uppercase;
+        clear:both;
+      }
+      
+      #jpc {
+        margin: 20px auto 50px;
+        padding: 10px 30px;
+        width: 1050px;
+        height: 650px;
+        background: -webkit-linear-gradient(bottom, rgb(191,194,188) 0%, rgb(206,210,201) 50%);
+        position: relative;
+        box-shadow: 0px 0px 25px #111 inset, 0px 5px 5px #111;
+        border: 2px solid #333;
+        border-radius: 20px
+      }
+      
+      #left {
+        float: left;
       }
       
       #logo {
-        margin: 20px 5px;
+        margin: 25px 25px;
       }
       
       #jpc #logo h1 {
@@ -32,6 +54,7 @@
       
       #logo h1, #logo h2 {
         margin: 5px 0;
+      
       }
       
       #logo h2 {
@@ -50,20 +73,43 @@
         border-left 185px solid #f00
       }
       
+      #bezel {
+        background: -webkit-linear-gradient(bottom, rgb(60,60,60) 0%, rgb(90,90,90) 100%);
+        padding: 15px;
+        position: absolute;
+        top: 25px;
+        right: 25px;
+      }
+      
+      #display {
+        width: 540px;
+        height: 80px;
+        background: #bdc6b3;
+        border: 2px solid #aaa;
+        padding: 15px;
+        border-top-color: #666;
+        border-top-width: 3px;
+        border-bottom-color: #bbb;
+        box-shadow: 0px 0px 10px #888 inset;
+      }
+      
       #pads {
-        width: 695px;
+        width: 575px;
         background: -webkit-linear-gradient(bottom, rgb(80,96,97) 0%, rgb(99,119,122) 100%);
         padding: 15px;
         vertical-align: baseline;
-        border-radius: 10px
+        border-radius: 10px;
+        position: absolute;
+        right: 25px;
+        bottom: 25px;
       }
       
       #pads button {
         background: -webkit-linear-gradient(bottom, rgb(166,166,166) 0%, rgb(189,189,189) 80%, rgb(209,209,209) 96%);
         box-shadow: 0 0 3px #222;
         border: none;
-        height: 150px;
-        width:  150px;
+        height: 120px;
+        width:  120px;
         margin: 10px;
       }
       
@@ -79,17 +125,34 @@
       #pads button.active {
         background: #ca8f8f;
       }
+      
+      #transport {
+        position: absolute;
+        bottom: 35px;
+        left: 55px;
+      }
+      
+      #transport button {
+        display: inline-block;
+        padding: 10px 30px;
+        font-size: 100%;
+        background: -webkit-linear-gradient(bottom, rgb(138,138,138) 0%, rgb(184,184,184) 100%);
+        color: #444;
+        box-shadow: 0 1px 2px #222;
+        border-width: 1px
+      }
+      
+      #transport button:active {
+        box-shadow: none;
+        background: -webkit-linear-gradient(bottom, rgb(160,160,160) 0%, rgb(138,138,138) 100%);
+        position: relative;
+        top: 1px
+      }
     /*]]>*/
   </style>
   <div id='jpc'>
-    <div id='logo'>
-      <h1>JPC2000</h1>
-      <h2>JavaScript Production Center</h2>
-    </div>
-    <div id='transport'>
-      <button id='record'>record</button>
-      <button id='play'>play</button>
-      <button id='stop'>stop</button>
+    <div id='bezel'>
+      <div id='display'></div>
     </div>
     <div id='pads'>
       <button class='pad' id='113'></button>
@@ -105,15 +168,26 @@
       <button class='pad' id='99'></button>
       <button class='pad' id='118'></button>
     </div>
-    <div id='params'>
-      <label for='choke_group'>Choke Group</label>
-      <select disabled='disabled' id='choke_group'>
-        <option></option>
-        <option>1</option>
-        <option>2</option>
-        <option>3</option>
-        <option>4</option>
-      </select>
+    <div id='right'>
+      <div id='logo'>
+        <h1>JPC2000</h1>
+        <h2>JavaScript Production Center</h2>
+      </div>
+      <div id='transport'>
+        <button id='record'>record</button>
+        <button id='play'>play</button>
+        <button id='stop'>stop</button>
+      </div>
+      <div id='params'>
+        <label for='choke_group'>Choke Group</label>
+        <select disabled='disabled' id='choke_group'>
+          <option></option>
+          <option>1</option>
+          <option>2</option>
+          <option>3</option>
+          <option>4</option>
+        </select>
+      </div>
     </div>
   </div>
 </body>
