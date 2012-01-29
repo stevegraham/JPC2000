@@ -7,12 +7,18 @@ $(document).ready ->
     canvas = document.getElementById 'display'
     ctx    = canvas.getContext "2d"
 
+    $('#display').click (event) ->
+      if Display.buffer
+        time = event.offsetX * (Display.buffer.duration / canvas.width)
+        console.log time
+
     ctx.strokeStyle = '#1c211a'
 
-    @drawWaveform: (buffer) ->
+    @drawWaveform: (@audio_player) ->
       @clear()
-      channelData   = buffer.getChannelData(0)
-      frameInterval = Math.floor buffer.length / canvas.width
+      @buffer        = @audio_player.buffer
+      channelData   = @buffer.getChannelData(0)
+      frameInterval = Math.floor @buffer.length / canvas.width
       posX          = 0
       i             = 0
 
@@ -20,7 +26,7 @@ $(document).ready ->
       ctx.beginPath()
       ctx.moveTo posX, canvas.height / 2
 
-      while i < buffer.length
+      while i < @buffer.length
         float = channelData[i]
         i    += frameInterval
 
@@ -89,6 +95,7 @@ $(document).ready ->
       @view.lightOff()
       @view.lightOn()
       window.clearTimeout @timer
+      Display.drawWaveform this
       timeOut =  (@buffer.length / @buffer.sampleRate) * 1000
       @timer  = window.setTimeout @view.lightOff, timeOut
 
@@ -99,7 +106,7 @@ $(document).ready ->
       reader.onload = (event) =>
         onsuccess = (buffer) ->
           self.buffer = buffer
-          Display.drawWaveform buffer
+          Display.drawWaveform self
 
         onerror   = -> alert 'Unsupported file format'
 
@@ -176,16 +183,19 @@ $(document).ready ->
     initialize: ->
       @sequencer = new Sequencer
 
-    play: -> @sequencer.play()
+    play:   -> @sequencer.play()
 
-    stop: -> @sequencer.stop()
+    stop:   -> @sequencer.stop()
 
     record: -> @sequencer.record()
+
+    undo:   -> @sequencer.undo()
 
     events:
       'click #record' : 'record'
       'click #play'   : 'play'
       'click #stop'   : 'stop'
+      'click #undo'   : 'undo'
 
     new TransportView
 

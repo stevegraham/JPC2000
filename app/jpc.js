@@ -19,19 +19,29 @@
 
       ctx = canvas.getContext("2d");
 
+      $('#display').click(function(event) {
+        var time;
+        if (Display.buffer) {
+          time = event.offsetX * (Display.buffer.duration / canvas.width);
+          return console.log(time);
+        }
+      });
+
       ctx.strokeStyle = '#1c211a';
 
-      Display.drawWaveform = function(buffer) {
+      Display.drawWaveform = function(audio_player) {
         var channelData, float, frameInterval, i, posX;
+        this.audio_player = audio_player;
         this.clear();
-        channelData = buffer.getChannelData(0);
-        frameInterval = Math.floor(buffer.length / canvas.width);
+        this.buffer = this.audio_player.buffer;
+        channelData = this.buffer.getChannelData(0);
+        frameInterval = Math.floor(this.buffer.length / canvas.width);
         posX = 0;
         i = 0;
         ctx.lineTo(canvas.width, 0);
         ctx.beginPath();
         ctx.moveTo(posX, canvas.height / 2);
-        while (i < buffer.length) {
+        while (i < this.buffer.length) {
           float = channelData[i];
           i += frameInterval;
           ctx.lineTo(++posX, (float * 40) + (canvas.height / 2));
@@ -123,6 +133,7 @@
         this.view.lightOff();
         this.view.lightOn();
         window.clearTimeout(this.timer);
+        Display.drawWaveform(this);
         timeOut = (this.buffer.length / this.buffer.sampleRate) * 1000;
         return this.timer = window.setTimeout(this.view.lightOff, timeOut);
       };
@@ -136,7 +147,7 @@
           var onerror, onsuccess;
           onsuccess = function(buffer) {
             self.buffer = buffer;
-            return Display.drawWaveform(buffer);
+            return Display.drawWaveform(self);
           };
           onerror = function() {
             return alert('Unsupported file format');
@@ -281,10 +292,15 @@
         return this.sequencer.record();
       };
 
+      TransportView.prototype.undo = function() {
+        return this.sequencer.undo();
+      };
+
       TransportView.prototype.events = {
         'click #record': 'record',
         'click #play': 'play',
-        'click #stop': 'stop'
+        'click #stop': 'stop',
+        'click #undo': 'undo'
       };
 
       new TransportView;
