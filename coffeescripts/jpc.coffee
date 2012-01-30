@@ -10,7 +10,6 @@ $(document).ready ->
     $('#display').click (event) ->
       if Display.buffer
         time = event.offsetX * (Display.buffer.duration / canvas.width)
-        console.log time
 
     ctx.strokeStyle = '#1c211a'
 
@@ -42,26 +41,32 @@ $(document).ready ->
 
   class Sequencer
     constructor: ->
-      @track    = []
+      @tracks   = []
       @timers   = []
       @position = 0
 
       $('#pads button').bind 'mousedown', (event) =>
         if @recording
           timeDelta = new Date().getTime() - @timeStamp
-          @track.push [timeDelta, event.target]
+          @current_track.push [timeDelta, event.target]
 
 
     record: ->
-      @timeStamp = new Date().getTime()
+      @timeStamp     = new Date().getTime()
+      @current_track = []
+      @tracks.push @current_track
+
       @play()
-      @recording = true
+      @recording     = true
 
     play: ->
-      @recording = false
-      @timers = @track.map (pair, index) ->
-        func = -> $(pair[1]).trigger 'mousedown'
-        window.setTimeout func, pair[0]
+      if @tracks.length != 0
+        @timers = @tracks.reduce (a,b) -> a.concat b
+        @timers = @timers.map (pair, index) ->
+          func = -> $(pair[1]).trigger 'mousedown'
+          window.setTimeout func, pair[0]
+
+        @recording = false
 
     stop: ->
       @recording = false
@@ -69,7 +74,7 @@ $(document).ready ->
       @timers.map (timer) -> window.clearTimeout timer
       @timers = []
 
-    deleteTrack: (track_id) ->
+    undo: -> @tracks.pop()
 
   audioContext = new webkitAudioContext
 

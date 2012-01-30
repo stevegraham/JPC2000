@@ -22,8 +22,7 @@
       $('#display').click(function(event) {
         var time;
         if (Display.buffer) {
-          time = event.offsetX * (Display.buffer.duration / canvas.width);
-          return console.log(time);
+          return time = event.offsetX * (Display.buffer.duration / canvas.width);
         }
       });
 
@@ -61,33 +60,40 @@
 
       function Sequencer() {
         var _this = this;
-        this.track = [];
+        this.tracks = [];
         this.timers = [];
         this.position = 0;
         $('#pads button').bind('mousedown', function(event) {
           var timeDelta;
           if (_this.recording) {
             timeDelta = new Date().getTime() - _this.timeStamp;
-            return _this.track.push([timeDelta, event.target]);
+            return _this.current_track.push([timeDelta, event.target]);
           }
         });
       }
 
       Sequencer.prototype.record = function() {
         this.timeStamp = new Date().getTime();
+        this.current_track = [];
+        this.tracks.push(this.current_track);
         this.play();
         return this.recording = true;
       };
 
       Sequencer.prototype.play = function() {
-        this.recording = false;
-        return this.timers = this.track.map(function(pair, index) {
-          var func;
-          func = function() {
-            return $(pair[1]).trigger('mousedown');
-          };
-          return window.setTimeout(func, pair[0]);
-        });
+        if (this.tracks.length !== 0) {
+          this.timers = this.tracks.reduce(function(a, b) {
+            return a.concat(b);
+          });
+          this.timers = this.timers.map(function(pair, index) {
+            var func;
+            func = function() {
+              return $(pair[1]).trigger('mousedown');
+            };
+            return window.setTimeout(func, pair[0]);
+          });
+          return this.recording = false;
+        }
       };
 
       Sequencer.prototype.stop = function() {
@@ -98,7 +104,9 @@
         return this.timers = [];
       };
 
-      Sequencer.prototype.deleteTrack = function(track_id) {};
+      Sequencer.prototype.undo = function() {
+        return this.tracks.pop();
+      };
 
       return Sequencer;
 
