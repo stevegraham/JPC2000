@@ -11,7 +11,7 @@
       return $('#' + code).trigger('mousedown');
     });
     Display = (function() {
-      var canvas, ctx;
+      var canvas, ctx, el, selectionComplete;
 
       function Display() {}
 
@@ -19,28 +19,63 @@
 
       ctx = canvas.getContext("2d");
 
-      $('#display').click(function(event) {
-        var time;
-        if (Display.buffer) {
-          return time = event.offsetX * (Display.buffer.duration / canvas.width);
-        }
-      });
+      el = $('#display');
+
+      ctx.globalCompositeOperation = 'destination-over';
 
       ctx.strokeStyle = '#1c211a';
 
-      Display.drawWaveform = function(audio_player) {
-        var channelData, float, frameInterval, i, posX;
+      selectionComplete = function(event) {
+        if (Display.audio_player) return Display.mouseOrigin = false;
+      };
+
+      el.mousedown(function(event) {
+        return Display.mouseOrigin = event.offsetX;
+      });
+
+      el.mouseup(selectionComplete);
+
+      el.mouseout(selectionComplete);
+
+      el.mousemove(function(event) {
+        var player;
+        if ((player = Display.audio_player) && Display.mouseOrigin) {
+          player.startAt = Display.mouseOrigin * (player.buffer.duration / canvas.width);
+          player.endAt = event.offsetX * (player.buffer.duration / canvas.width);
+          return Display.draw(player);
+        }
+      });
+
+      Display.drawSelection = function(start, end) {
+        var convert,
+          _this = this;
+        convert = function(time) {
+          return (time / (_this.audio_player.buffer.duration / canvas.width)) - 15;
+        };
+        ctx.save();
+        ctx.fillStyle = '#9FA697';
+        ctx.fillRect(convert(start), 0, convert(end) - convert(start), canvas.height);
+        return ctx.restore();
+      };
+
+      Display.draw = function(audio_player) {
         this.audio_player = audio_player;
         this.clear();
-        this.buffer = this.audio_player.buffer;
-        channelData = this.buffer.getChannelData(0);
-        frameInterval = Math.floor(this.buffer.length / canvas.width);
+        this.drawWaveform();
+        return this.drawSelection(this.audio_player.startAt, this.audio_player.endAt);
+      };
+
+      Display.drawWaveform = function() {
+        var buffer, channelData, float, frameInterval, i, posX;
+        buffer = this.audio_player.buffer;
+        channelData = buffer.getChannelData(0);
+        frameInterval = Math.floor(buffer.length / canvas.width);
         posX = 0;
         i = 0;
         ctx.lineTo(canvas.width, 0);
         ctx.beginPath();
         ctx.moveTo(posX, canvas.height / 2);
-        while (i < this.buffer.length) {
+        while (i < buffer.length) {
           float = channelData[i];
           i += frameInterval;
           ctx.lineTo(++posX, (float * 40) + (canvas.height / 2));
@@ -141,7 +176,7 @@
         this.view.lightOff();
         this.view.lightOn();
         window.clearTimeout(this.timer);
-        Display.drawWaveform(this);
+        Display.draw(this);
         timeOut = (this.buffer.length / this.buffer.sampleRate) * 1000;
         return this.timer = window.setTimeout(this.view.lightOff, timeOut);
       };
@@ -155,7 +190,7 @@
           var onerror, onsuccess;
           onsuccess = function(buffer) {
             self.buffer = buffer;
-            return Display.drawWaveform(self);
+            return Display.draw(self);
           };
           onerror = function() {
             return alert('Unsupported file format');

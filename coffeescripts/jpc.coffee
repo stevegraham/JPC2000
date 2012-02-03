@@ -6,18 +6,43 @@ $(document).ready ->
   class Display
     canvas = document.getElementById 'display'
     ctx    = canvas.getContext "2d"
+    el     = $('#display')
 
-    $('#display').click (event) ->
-      if Display.buffer
-        time = event.offsetX * (Display.buffer.duration / canvas.width)
+    ctx.globalCompositeOperation = 'destination-over'
+    ctx.strokeStyle              = '#1c211a'
 
-    ctx.strokeStyle = '#1c211a'
+    selectionComplete = (event) ->
+      if Display.audio_player
+        Display.mouseOrigin = false
 
-    @drawWaveform: (@audio_player) ->
+    el.mousedown (event) -> Display.mouseOrigin = event.offsetX
+
+    el.mouseup   selectionComplete
+
+    el.mouseout  selectionComplete
+
+    el.mousemove (event) ->
+      if (player = Display.audio_player) && Display.mouseOrigin
+        player.startAt = Display.mouseOrigin * (player.buffer.duration / canvas.width)
+        player.endAt   = event.offsetX * (player.buffer.duration / canvas.width)
+        Display.draw player
+
+    @drawSelection: (start, end) ->
+      convert = (time) => (time / (@audio_player.buffer.duration / canvas.width)) - 15
+      ctx.save()
+      ctx.fillStyle = '#9FA697'
+      ctx.fillRect convert(start), 0, convert(end) - convert(start), canvas.height
+      ctx.restore()
+
+    @draw: (@audio_player) ->
       @clear()
-      @buffer        = @audio_player.buffer
-      channelData   = @buffer.getChannelData(0)
-      frameInterval = Math.floor @buffer.length / canvas.width
+      @drawWaveform()
+      @drawSelection @audio_player.startAt, @audio_player.endAt
+
+    @drawWaveform: ->
+      buffer        = @audio_player.buffer
+      channelData   = buffer.getChannelData(0)
+      frameInterval = Math.floor buffer.length / canvas.width
       posX          = 0
       i             = 0
 
@@ -25,7 +50,7 @@ $(document).ready ->
       ctx.beginPath()
       ctx.moveTo posX, canvas.height / 2
 
-      while i < @buffer.length
+      while i < buffer.length
         float = channelData[i]
         i    += frameInterval
 
@@ -33,9 +58,6 @@ $(document).ready ->
         ctx.lineTo posX,   -(float *40) + (canvas.height /2)
 
       ctx.stroke()
-
-
-
 
     @clear: -> ctx.clearRect 0, 0, canvas.width, canvas.height
 
@@ -100,7 +122,7 @@ $(document).ready ->
       @view.lightOff()
       @view.lightOn()
       window.clearTimeout @timer
-      Display.drawWaveform this
+      Display.draw this
       timeOut =  (@buffer.length / @buffer.sampleRate) * 1000
       @timer  = window.setTimeout @view.lightOff, timeOut
 
@@ -111,7 +133,7 @@ $(document).ready ->
       reader.onload = (event) =>
         onsuccess = (buffer) ->
           self.buffer = buffer
-          Display.drawWaveform self
+          Display.draw self
 
         onerror   = -> alert 'Unsupported file format'
 
