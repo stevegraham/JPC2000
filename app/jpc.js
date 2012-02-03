@@ -4,7 +4,7 @@
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; };
 
   $(document).ready(function() {
-    var AudioPlayer, ChokeGroupView, Display, PadView, Sequencer, TransportView, audioContext, chokeGroup;
+    var AudioPlayer, Display, PadView, ParamsView, Sequencer, TransportView, audioContext, params;
     $(document).bind('keypress', function(event) {
       var code;
       code = String(event.keyCode);
@@ -158,6 +158,7 @@
           this.source = audioContext.createBufferSource();
           this.source.buffer = this.buffer;
           this.source.connect(audioContext.destination);
+          this.source.playbackRate.value = this.playbackRate;
           this.source.noteGrainOn(0, this.startAt || 0, (this.endAt - this.startAt) || this.buffer.duration);
           return this.triggerView();
         }
@@ -168,6 +169,17 @@
           this.source.noteOff(0);
           window.clearTimeout(this.timer);
           return this.view.lightOff;
+        }
+      };
+
+      AudioPlayer.prototype.getPlaybackRate = function() {
+        if (this.source) return this.source.playbackRate.value;
+      };
+
+      AudioPlayer.prototype.setPlaybackRate = function(rate) {
+        if (this.source) {
+          this.playbackRate = rate;
+          return this.source.playbackRate.value = rate;
         }
       };
 
@@ -226,7 +238,7 @@
       };
 
       PadView.prototype.triggerSample = function() {
-        chokeGroup.select(this);
+        params.select(this);
         if (this.chokeGroup) $('#pads button').trigger('choke', this.chokeGroup);
         this.audio_player.stop();
         return this.audio_player.play();
@@ -268,47 +280,50 @@
       return PadView;
 
     })(Backbone.View);
-    ChokeGroupView = (function(_super) {
+    ParamsView = (function(_super) {
 
-      __extends(ChokeGroupView, _super);
+      __extends(ParamsView, _super);
 
-      function ChokeGroupView() {
-        ChokeGroupView.__super__.constructor.apply(this, arguments);
+      function ParamsView() {
+        ParamsView.__super__.constructor.apply(this, arguments);
       }
 
-      ChokeGroupView.prototype.el = '#choke_group';
+      ParamsView.prototype.el = '#params';
 
-      ChokeGroupView.prototype.initialize = function() {
-        return this.el = $(this.el);
+      ParamsView.prototype.initialize = function() {
+        this.choke = $('#choke_group');
+        return this.pitch = $('#pitch');
       };
 
-      ChokeGroupView.prototype.enable = function() {
-        return this.el.attr('disabled', null);
+      ParamsView.prototype.enable = function() {
+        return this.choke.attr('disabled', null);
       };
 
-      ChokeGroupView.prototype.disable = function() {
-        return this.el.attr('disabled', null);
-      };
-
-      ChokeGroupView.prototype.select = function(selector) {
+      ParamsView.prototype.select = function(selector) {
         this.selector = selector;
         this.enable();
-        return this.el.val(this.selector.chokeGroup);
+        this.choke.val(this.selector.chokeGroup);
+        return this.pitch.val(this.selector.audio_player.getPlaybackRate());
       };
 
-      ChokeGroupView.prototype.onchange = function(event) {
+      ParamsView.prototype.onchangeChoke = function(event) {
         var value;
         if (value = event.target.value) return this.selector.chokeGroup = value;
       };
 
-      ChokeGroupView.prototype.events = {
-        'change': 'onchange'
+      ParamsView.prototype.onchangePitch = function(event) {
+        return this.selector.audio_player.setPlaybackRate(event.target.value);
       };
 
-      return ChokeGroupView;
+      ParamsView.prototype.events = {
+        'change #choke_group': 'onchangeChoke',
+        'change #pitch': 'onchangePitch'
+      };
+
+      return ParamsView;
 
     })(Backbone.View);
-    chokeGroup = new ChokeGroupView;
+    params = new ParamsView;
     TransportView = (function(_super) {
 
       __extends(TransportView, _super);

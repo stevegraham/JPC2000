@@ -92,7 +92,6 @@ $(document).ready ->
 
     stop: ->
       @recording = false
-      #$('#pads button').unbind 'mousedown'
       @timers.map (timer) -> window.clearTimeout timer
       @timers = []
 
@@ -108,6 +107,7 @@ $(document).ready ->
         @source        = audioContext.createBufferSource()
         @source.buffer = @buffer
         @source.connect audioContext.destination
+        @source.playbackRate.value = @playbackRate
         @source.noteGrainOn 0, @startAt || 0, (@endAt - @startAt) || @buffer.duration
         @triggerView()
 
@@ -117,6 +117,12 @@ $(document).ready ->
         window.clearTimeout @timer
         @view.lightOff
 
+    getPlaybackRate: -> @source.playbackRate.value if @source
+
+    setPlaybackRate: (rate) ->
+      if @source
+        @playbackRate = rate
+        @source.playbackRate.value = rate
 
     triggerView: ->
       @view.lightOff()
@@ -152,7 +158,7 @@ $(document).ready ->
     lightOff: => @el.removeClass 'active'
 
     triggerSample: ->
-      chokeGroup.select(this)
+      params.select this
       $('#pads button').trigger('choke', @chokeGroup) if @chokeGroup
       @audio_player.stop()
       @audio_player.play()
@@ -181,28 +187,32 @@ $(document).ready ->
       'choke'              : 'onchoke'
       'webkitAnimationEnd' : 'resetAnimation'
 
+  class ParamsView extends Backbone.View
+    el: '#params'
 
-  class ChokeGroupView extends Backbone.View
-    el: '#choke_group'
+    initialize: ->
+      @choke = $('#choke_group')
+      @pitch = $('#pitch')
 
-    initialize: -> @el = $(@el)
-    enable:     -> @el.attr('disabled', null)
-    disable:    -> @el.attr('disabled', null)
+    enable:     -> @choke.attr('disabled', null)
 
     select: (@selector) ->
       @enable()
-      @el.val @selector.chokeGroup
+      @choke.val @selector.chokeGroup
+      @pitch.val @selector.audio_player.getPlaybackRate()
 
-
-    onchange: (event) ->
+    onchangeChoke: (event) ->
       if value = event.target.value
         @selector.chokeGroup = value
 
+    onchangePitch: (event) ->
+      @selector.audio_player.setPlaybackRate event.target.value
+
     events:
-      'change': 'onchange'
+      'change #choke_group': 'onchangeChoke'
+      'change #pitch'      : 'onchangePitch'
 
-
-  chokeGroup = new ChokeGroupView
+  params = new ParamsView
 
   class TransportView extends Backbone.View
     el: '#transport'
