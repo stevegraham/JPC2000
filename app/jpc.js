@@ -158,7 +158,7 @@
           this.source = audioContext.createBufferSource();
           this.source.buffer = this.buffer;
           this.source.connect(audioContext.destination);
-          this.source.noteOn(0);
+          this.source.noteGrainOn(0, this.startAt || 0, (this.endAt - this.startAt) || this.buffer.duration);
           return this.triggerView();
         }
       };

@@ -108,7 +108,7 @@ $(document).ready ->
         @source        = audioContext.createBufferSource()
         @source.buffer = @buffer
         @source.connect audioContext.destination
-        @source.noteOn 0
+        @source.noteGrainOn 0, @startAt || 0, (@endAt - @startAt) || @buffer.duration
         @triggerView()
 
     stop: ->
