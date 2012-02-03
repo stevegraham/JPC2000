@@ -28,8 +28,8 @@
       #jpc {
         margin: 20px auto 50px;
         padding: 10px 30px;
-        width: 1050px;
-        height: 650px;
+        width: 1000px;
+        height: 620px;
         background: -webkit-linear-gradient(bottom, rgb(191,194,188) 0%, rgb(206,210,201) 50%);
         position: relative;
         box-shadow: 0px 0px 25px #111 inset, 0px 5px 5px #111;
@@ -70,10 +70,10 @@
       }
       
       #mhd {
-        width: 400px;
+        width: 350px;
         box-shadow: 0px 1px 1px #222;
         position: absolute;
-        top: 300px;
+        top: 250px;
         left: 40px;
         -webkit-transform:rotate(350deg)
       }
@@ -87,7 +87,7 @@
         background: #71ad1b;
         color: #d3d13c;
         position: absolute;
-        top: 380px;
+        top: 330px;
         left: 140px;
         box-shadow: 0px 1px 1px #222;
         -webkit-transform:rotate(3deg)
@@ -112,7 +112,7 @@
       }
       
       #pads {
-        width: 575px;
+        width: 535px;
         background: -webkit-linear-gradient(bottom, rgb(80,96,97) 0%, rgb(99,119,122) 100%);
         padding: 15px;
         vertical-align: baseline;
@@ -126,9 +126,15 @@
         background: -webkit-linear-gradient(bottom, rgb(166,166,166) 0%, rgb(189,189,189) 80%, rgb(209,209,209) 96%);
         box-shadow: 0 0 3px #222;
         border: none;
-        height: 120px;
-        width:  120px;
+        height: 110px;
+        width:  110px;
         margin: 10px;
+        color: #444;
+        text-shadow:  0 1px 2px #fff;
+        font-size: 90%;
+        text-align: right;
+        padding-top: 85px;
+        display: inline-block;
       }
       
       @-webkit-keyframes pad_hit {
@@ -146,14 +152,15 @@
       
       #transport {
         position: absolute;
-        bottom: 35px;
-        left: 25px;
+        bottom: 25px;
+        left: 30px;
       }
       
       #transport button {
         display: inline-block;
-        padding: 10px 30px;
-        font-size: 100%;
+        padding: 10px 25px;
+        margin: 0 5px;
+        font-size: 90%;
         background: -webkit-linear-gradient(bottom, rgb(138,138,138) 0%, rgb(184,184,184) 100%);
         color: #444;
         box-shadow: 0 1px 2px #222, 0 -1px 1px #666;
@@ -169,27 +176,26 @@
       }
     /*]]>*/
   </style>
+  <a href='http://github.com/stevegraham/JPC2000'>
+    <img src='https://a248.e.akamai.net/assets.github.com/img/7afbc8b248c68eb468279e8c17986ad46549fb71/687474703a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67' style='position: fixed; right: 0; top: 0; z-index: 999;' />
+  </a>
   <div id='jpc'>
     <div id='bezel'>
-      <canvas height='80px' id='display' width='540px'></canvas>
-    </div>
-    <img id='mhd' src='mhd_logo.png' />
-    <div id='sticker'>
-      A Stevie Graham Joint
+      <canvas height='80px' id='display' width='500px'></canvas>
     </div>
     <div id='pads'>
-      <button class='pad' id='113'></button>
-      <button class='pad' id='119'></button>
-      <button class='pad' id='101'></button>
-      <button class='pad' id='114'></button>
-      <button class='pad' id='97'></button>
-      <button class='pad' id='115'></button>
-      <button class='pad' id='100'></button>
-      <button class='pad' id='102'></button>
-      <button class='pad' id='122'></button>
-      <button class='pad' id='120'></button>
-      <button class='pad' id='99'></button>
-      <button class='pad' id='118'></button>
+      <button class='pad' id='113'>q</button>
+      <button class='pad' id='119'>w</button>
+      <button class='pad' id='101'>e</button>
+      <button class='pad' id='114'>r</button>
+      <button class='pad' id='97'>a</button>
+      <button class='pad' id='115'>s</button>
+      <button class='pad' id='100'>d</button>
+      <button class='pad' id='102'>f</button>
+      <button class='pad' id='122'>z</button>
+      <button class='pad' id='120'>x</button>
+      <button class='pad' id='99'>c</button>
+      <button class='pad' id='118'>v</button>
     </div>
     <div id='right'>
       <div id='logo'>
