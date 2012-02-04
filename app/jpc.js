@@ -291,18 +291,18 @@
       ParamsView.prototype.el = '#params';
 
       ParamsView.prototype.initialize = function() {
-        this.choke = $('#choke_group');
         return this.pitch = $('#pitch');
       };
 
       ParamsView.prototype.enable = function() {
-        return this.choke.attr('disabled', null);
+        return $('#params input').attr('disabled', null);
       };
 
       ParamsView.prototype.select = function(selector) {
         this.selector = selector;
         this.enable();
-        this.choke.val(this.selector.chokeGroup);
+        $('#params input[type=radio]').removeAttr('checked');
+        $('#params input[type=radio][value=' + this.selector.chokeGroup + ']').attr('checked', 'checked');
         return this.pitch.val(this.selector.audio_player.getPlaybackRate());
       };
 
@@ -316,7 +316,7 @@
       };
 
       ParamsView.prototype.events = {
-        'change #choke_group': 'onchangeChoke',
+        'change input[type=radio]': 'onchangeChoke',
         'change #pitch': 'onchangePitch'
       };
 

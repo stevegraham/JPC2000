@@ -191,14 +191,14 @@ $(document).ready ->
     el: '#params'
 
     initialize: ->
-      @choke = $('#choke_group')
       @pitch = $('#pitch')
 
-    enable:     -> @choke.attr('disabled', null)
+    enable:     -> $('#params input').attr('disabled', null)
 
     select: (@selector) ->
       @enable()
-      @choke.val @selector.chokeGroup
+      $('#params input[type=radio]').removeAttr('checked')
+      $('#params input[type=radio][value=' + @selector.chokeGroup + ']').attr('checked', 'checked')
       @pitch.val @selector.audio_player.getPlaybackRate()
 
     onchangeChoke: (event) ->
@@ -209,8 +209,8 @@ $(document).ready ->
       @selector.audio_player.setPlaybackRate event.target.value
 
     events:
-      'change #choke_group': 'onchangeChoke'
-      'change #pitch'      : 'onchangePitch'
+      'change input[type=radio]' : 'onchangeChoke'
+      'change #pitch'            : 'onchangePitch'
 
   params = new ParamsView
 

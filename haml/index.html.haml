@@ -128,13 +128,38 @@
       -webkit-transform:rotate(-90deg);
       -webkit-appearance: none;
       background-image:-webkit-linear-gradient(bottom, rgb(242,237,242) 0%, rgb(184,184,184) 24%, rgb(207,207,207) 26%, rgb(230,230,230) 45%, rgb(154,167,218) 46%, rgb(155,177,222) 52%, rgb(255,255,255) 52%, rgb(230,230,230) 77%, rgb(255,255,255) 80%, rgb(212,212,212) 97%, rgb(214,214,214) 95%);
-      width: 50px;
+      width: 60px;
       height: 30px;
-      border: 1px solid #aaa;
-      box-shadow: 0px -1px 3px #000
+      border: 2px solid #999;
+      border-bottom-color: #ddd;
+      box-shadow: 0px -1px 1px #000
     }
 
-    #choke_group, #params label {
+    #params {
+      text-transform: lowercase;
+      color: #555;
+    }
+
+    #params fieldset {
+      position: absolute;
+      bottom: 100px;
+      left: 145px;
+      width: 245px;
+      font-size: 90%;
+      border-color: #ddd
+    }
+
+    #params fieldset input {
+      margin: 0px 16px 2px;
+      -webkit-appearance: none;
+      background: #300;
+      height:10px;
+      width: 10px;
+      border: 1px solid #222
+    }
+
+    #params fieldset input:checked {
+      background-image: -webkit-radial-gradient(rgb(255,105,105) 2%, rgb(255,0,0) 12%, rgb(59,20,20) 100%);
     }
 
     #pads {
@@ -243,11 +268,10 @@
 
 
       #params
-        %label{ for: 'choke_group' } Choke Group
-        %select#choke_group{ disabled: 'disabled' }
-          %option
-          %option 1
-          %option 2
-          %option 3
-          %option 4
+        %fieldset
+          %legend choke group
+          %input{ type: 'radio', name: 'choke', value: 1, disabled: 'disabled' } 1
+          %input{ type: 'radio', name: 'choke', value: 2, disabled: 'disabled' } 2
+          %input{ type: 'radio', name: 'choke', value: 3, disabled: 'disabled' } 3
+          %input{ type: 'radio', name: 'choke', value: 4, disabled: 'disabled' } 4
         %input#pitch{ type: 'range', min: 0.50, max: 1.50, step: 0.01, value: 1.00 }
