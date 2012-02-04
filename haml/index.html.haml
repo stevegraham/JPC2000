@@ -74,8 +74,8 @@
       width: 350px;
       box-shadow: 0px 1px 1px #222;
       position: absolute;
-      top: 250px;
-      left: 40px;
+      top: 300px;
+      left: 90px;
       -webkit-transform:rotate(350deg)
     }
 
@@ -88,10 +88,10 @@
       background: #71ad1b;
       color: #d3d13c;
       position: absolute;
-      top: 330px;
-      left: 140px;
+      top: 370px;
+      left: 150px;
       box-shadow: 0px 1px 1px #222;
-      -webkit-transform:rotate(3deg)
+      -webkit-transform:rotate(2deg)
     }
 
     #bezel {
@@ -110,6 +110,31 @@
       border-top-width: 3px;
       border-bottom-color: #bbb;
       box-shadow: 0px 0px 10px #888 inset;
+    }
+
+    #pitch {
+      -webkit-appearance: none;
+      background-image: -webkit-linear-gradient(bottom, rgb(41,40,41) 0%, rgb(66,66,66) 47%, rgb(82,79,82) 66%, rgb(56,56,56) 68%);
+      height:5px;
+      border: 1px solid #222;
+      -webkit-transform:rotate(-90deg);
+      width: 310px;
+      position: absolute;
+      left: -90px;
+      bottom: 250px;
+    }
+
+    #pitch::-webkit-slider-thumb {
+      -webkit-transform:rotate(-90deg);
+      -webkit-appearance: none;
+      background-image:-webkit-linear-gradient(bottom, rgb(242,237,242) 0%, rgb(184,184,184) 24%, rgb(207,207,207) 26%, rgb(230,230,230) 45%, rgb(154,167,218) 46%, rgb(155,177,222) 52%, rgb(255,255,255) 52%, rgb(230,230,230) 77%, rgb(255,255,255) 80%, rgb(212,212,212) 97%, rgb(214,214,214) 95%);
+      width: 50px;
+      height: 30px;
+      border: 1px solid #aaa;
+      box-shadow: 0px -1px 3px #000
+    }
+
+    #choke_group, #params label {
     }
 
     #pads {
@@ -183,9 +208,9 @@
     #bezel
       %canvas#display{ width: '500px', height: '80px' }
 
-    -#%img#mhd{ src: 'mhd_logo.png'}
+    %img#mhd{ src: 'mhd_logo.png'}
 
-    -##sticker
+    #sticker
       A Stevie Graham Joint
 
     #pads
