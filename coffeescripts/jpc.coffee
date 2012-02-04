@@ -10,6 +10,13 @@ $(document).ready ->
 
     ctx.globalCompositeOperation = 'destination-over'
     ctx.strokeStyle              = '#1c211a'
+    ctx.font                     = "7pt Monaco"
+
+    ctx.fillText "1. Drag & drop MP3 files onto the pads. Tapping a pad makes it active", 0, 10
+    ctx.fillText "2. Optionally click & drag on the waveform to play a portion of the audio file", 0, 25
+    ctx.fillText "3. Click on the choke group LEDs to assign the active pad to a choke group", 0, 40
+    ctx.fillText "4. Use the pitch fader on the left to control the playback speed of the active pad", 0, 55
+    ctx.fillText "5. Record yourself. Subsequent recordings are laid over the previous pass", 0, 70
 
     selectionComplete = (event) ->
       if Display.audio_player
