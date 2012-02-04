@@ -79,7 +79,6 @@ $(document).ready ->
           timeDelta = new Date().getTime() - @timeStamp
           @current_track.push [timeDelta, event.target]
 
-
     record: ->
       @timeStamp     = new Date().getTime()
       @current_track = []
@@ -131,12 +130,14 @@ $(document).ready ->
         @playbackRate = rate
         @source.playbackRate.value = rate
 
+    computedDuration: -> (((@endAt - @startAt) || @buffer.duration) / @getPlaybackRate()) * 1000
+
     triggerView: ->
       @view.lightOff()
       @view.lightOn()
       window.clearTimeout @timer
       Display.draw this
-      timeOut =  (@buffer.length / @buffer.sampleRate) * 1000
+      timeOut = @computedDuration()
       @timer  = window.setTimeout @view.lightOff, timeOut
 
     load_file: (file) ->

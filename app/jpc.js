@@ -195,13 +195,17 @@
         }
       };
 
+      AudioPlayer.prototype.computedDuration = function() {
+        return (((this.endAt - this.startAt) || this.buffer.duration) / this.getPlaybackRate()) * 1000;
+      };
+
       AudioPlayer.prototype.triggerView = function() {
         var timeOut;
         this.view.lightOff();
         this.view.lightOn();
         window.clearTimeout(this.timer);
         Display.draw(this);
-        timeOut = (this.buffer.length / this.buffer.sampleRate) * 1000;
+        timeOut = this.computedDuration();
         return this.timer = window.setTimeout(this.view.lightOff, timeOut);
       };
 
