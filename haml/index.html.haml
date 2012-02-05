@@ -275,3 +275,16 @@
           %input{ type: 'radio', name: 'choke', value: 3, disabled: 'disabled' } 3
           %input{ type: 'radio', name: 'choke', value: 4, disabled: 'disabled' } 4
         %input#pitch{ type: 'range', min: 0.50, max: 1.50, step: 0.01, value: 1.00 }
+
+
+  :javascript
+    var GoSquared={};
+    GoSquared.acct = "GSN-227323-X";
+    (function(w){
+        function gs(){
+            w._gstc_lt=+(new Date); var d=document;
+            var g = d.createElement("script"); g.type = "text/javascript"; g.async = true; g.src = "//d1l6p2sc9645hc.cloudfront.net/tracker.js";
+            var s = d.getElementsByTagName("script")[0]; s.parentNode.insertBefore(g, s);
+        }
+        w.addEventListener?w.addEventListener("load",gs,false):w.attachEvent("onload",gs);
+    })(window);
