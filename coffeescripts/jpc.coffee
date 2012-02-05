@@ -1,4 +1,7 @@
 $(document).ready ->
+  if typeof(webkitAudioContext) == 'undefined' && typeof(AudioContext) == 'undefined'
+    alert 'Your browser does not support the W3C AudioContext API. Try Google Chrome.'
+
   $(document).bind 'keypress', (event) ->
     code = String event.keyCode
     $('#' + code).trigger 'mousedown'

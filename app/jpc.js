@@ -5,6 +5,9 @@
 
   $(document).ready(function() {
     var AudioPlayer, Display, PadView, ParamsView, Sequencer, TransportView, audioContext, params;
+    if (typeof webkitAudioContext === 'undefined' && typeof AudioContext === 'undefined') {
+      alert('Your browser does not support the W3C AudioContext API. Try Google Chrome.');
+    }
     $(document).bind('keypress', function(event) {
       var code;
       code = String(event.keyCode);
